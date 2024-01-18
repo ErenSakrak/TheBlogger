@@ -1,0 +1,34 @@
+import axios from "axios";
+
+const BASE_URL = "http://localhost:3001/api"; // API endpoint'i
+
+export const saveBlog = (blogData) => {
+  return axios.post(`${BASE_URL}/saveBlog`, blogData)
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      throw error;
+    });
+};
+
+export const getBlogs = () => {
+  return axios.get(`${BASE_URL}/getBlogs`)
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      throw error;
+    });
+};
+<Menu>
+          <Menu.Item key="1">
+            <Link to="/">Home</Link>
+          </Menu.Item>
+          <Menu.Item key="2">
+            <Link to="/create-blog">Create a Blog</Link>
+          </Menu.Item>
+          <Menu.Item key="3">
+            <Link to="/list-blog">List Blogs</Link>
+          </Menu.Item>
+          </Menu>
