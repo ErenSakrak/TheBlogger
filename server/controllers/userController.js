@@ -27,15 +27,15 @@ router.post('/register', async (req, res) => {
 // Giriş işlemi için bir endpoint ekleyin
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
     // E-posta ve şifre kontrolü burada gerçekleştirilecek
 
     // Örneğin, kullanıcıyı veritabanından bulma
-    const user = await User.findOne({ email, password });
+    const user = await User.findOne({ username, password });
 
     if (!user) {
-      return res.status(404).json({ message: 'Kullanıcı bulunamadı.' });
+      return res.status(404).json({ message: 'Kullanıcı adı veya şifre yanlış!' });
     }
 
     // Giriş başarılıysa kullanıcı bilgilerini döndür

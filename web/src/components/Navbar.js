@@ -1,18 +1,39 @@
 import React, { useEffect } from "react";
-import { Layout, Menu } from "antd";
-import { Link, useLocation } from "react-router-dom";
+import { Layout, Menu, Button, message } from "antd";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../auth/AuthContext";
 
 const { Header } = Layout;
 
 const Navbar = () => {
   const location = useLocation();
+  const { isLoggedIn, logout } = useAuth();
+  const navigate = useNavigate(); // useNavigate hook'unu kullanın
+  
 
   useEffect(() => {
-    // Sayfa değiştikçe seçili menüyü güncelle
-    // Bu kod bloğu, "/blog/:id" sayfasına uygun bir şekilde ayarlanabilir
-    const pathname = location.pathname;
-    console.log("New selected menu:", pathname);
-  }, [location.pathname]);
+    console.log("Sayfa değişti:", location.pathname);
+    console.log("isLoggedIn:", isLoggedIn);
+  }, [location.pathname, isLoggedIn]);
+
+  const handleLogout = async () => {
+  // Çıkış yapılırken loading başlasın
+  message.loading({ content: 'Çıkış yapılıyor...', key: 'logoutLoading', duration: 0.4 });
+
+  try {
+    await logout();
+    // Çıkış yapıldıktan sonra bir süre bekleyip Login sayfasına yönlendir
+    setTimeout(() => {
+      // Çıkış işlemi tamamlandıktan sonra "Çıkış Yapıldı" mesajını göster
+      message.success({ content: 'Çıkış yapıldı.', key: 'logoutSuccess' });
+      navigate("/login");
+    }, 500); // 1500 milisaniye (1.5 saniye) bekletme süresi
+  } catch (error) {
+    // Hata durumunda hata mesajını göster
+    message.error({ content: 'Çıkış sırasında bir hata oluştu.', key: 'logoutError' });
+  }
+};
+
 
   return (
     <Layout>
@@ -35,7 +56,7 @@ const Navbar = () => {
               height: "40px",
               background: "#fff",
               marginRight: "16px",
-              backgroundColor: "magenta"
+              backgroundColor: "magenta",
             }}
           >
             {/* Logo içeriği buraya eklenebilir */}
@@ -59,18 +80,29 @@ const Navbar = () => {
           <Menu.Item key="/">
             <Link to="/">Anasayfa</Link>
           </Menu.Item>
-          <Menu.Item key="/create-blog">
-            <Link to="/create-blog">Blog Oluştur</Link>
-          </Menu.Item>
-          <Menu.Item key="/list-blog">
-            <Link to="/list-blog">Bloglarım</Link>
-          </Menu.Item>
-          <Menu.Item key="/register">
-            <Link to="/register">Kayıt Ol</Link>
-          </Menu.Item>
-          <Menu.Item key="/login">
-            <Link to="/login">Giriş Yap</Link>
-          </Menu.Item>
+          {isLoggedIn && (
+            <>
+              <Menu.Item key="/create-blog">
+                <Link to="/create-blog">Blog Oluştur</Link>
+              </Menu.Item>
+              <Menu.Item key="/list-blog">
+                <Link to="/list-blog">Bloglarım</Link>
+              </Menu.Item>
+              <Menu.Item>
+                <Button onClick={handleLogout}>Çıkış Yap</Button>
+              </Menu.Item>
+            </>
+          )}
+          {!isLoggedIn && (
+            <>
+              <Menu.Item key="/register">
+                <Link to="/register">Kayıt Ol</Link>
+              </Menu.Item>
+              <Menu.Item key="/login">
+                <Link to="/login">Giriş Yap</Link>
+              </Menu.Item>
+            </>
+          )}
         </Menu>
       </Header>
     </Layout>

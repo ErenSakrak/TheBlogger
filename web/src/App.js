@@ -1,20 +1,19 @@
 import "./Css/App.css";
 import React from "react";
 import Navbar from "./components/Navbar";
-import SideBar from "./components/Body";
+import Body from "./components/Body";
 import { BrowserRouter as Router } from "react-router-dom";
+import { AuthProvider } from "./auth/AuthContext";
 
 function App() {
   return (
-    <div>
-      <Router>
-      <div>
+    <div style={{ marginTop: "63px" }}>
+    <Router>
+      <AuthProvider>
         <Navbar />
-        <div style={{ marginTop: "63px" }}>
-          <SideBar />
-        </div>
-      </div>
-      </Router>
+        <Body />
+      </AuthProvider>
+    </Router>
     </div>
   );
 }

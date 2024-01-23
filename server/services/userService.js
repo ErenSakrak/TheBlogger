@@ -24,7 +24,7 @@ const userService = {
 
       // Kullanıcı bulunamazsa hata döndür
       if (!user) {
-        throw new Error('Kullanıcı bulunamadı.');
+        throw new Error('Kullanıcı adı veya şifre yanlış!');
       }
 
       // Şifre kontrolü
