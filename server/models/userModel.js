@@ -4,6 +4,11 @@ const mongoose = require('mongoose');
 
 // Kullanıcı modelini tanımla
 const userSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   username: {
     type: String,
     required: true,

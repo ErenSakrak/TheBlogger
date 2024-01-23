@@ -19,7 +19,7 @@ function Main() {
       <Header style={{ background: "#fff", padding: "0 16px" }}>
         <Title level={1} style={{ margin: 0 }}>EN YENİLER</Title>
       </Header>
-      <Content style={{ padding: "16px" }}>
+      <Content style={{ padding: "16px", background: "#fff" }}>
 
         {loading ? (
           <div style={{ textAlign: "center", padding: "16px" }}>

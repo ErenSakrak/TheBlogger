@@ -1,28 +1,43 @@
 // services/userService.js
 
+const User = require('../models/userModel');
+
 const userService = {
-    login: async (userData) => {
+  register: async (userData) => {
+    try {
       const { username, password } = userData;
-  
-      // Kullanıcı girişi için API çağrısı yapılabilir
-      const response = await fetch("http://localhost:3001/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
-  
-      if (response.ok) {
-        // Giriş başarılı
-        return true;
-      } else {
-        // Giriş başarısız, hata durumunu kontrol et
-        const errorData = await response.json();
-        throw new Error(errorData.message);
+      const newUser = new User({ username, password });
+      await newUser.save();
+      return { success: true, message: 'Kayıt başarıyla tamamlandı.' };
+    } catch (error) {
+      console.error(error);
+      return { success: false, message: 'Kayıt sırasında bir hata oluştu.' };
+    }
+  },
+
+  login: async (userData) => {
+    try {
+      const { username, password } = userData;
+      
+      // Kullanıcı adına göre MongoDB'den kullanıcıyı bul
+      const user = await User.findOne({ username });
+
+      // Kullanıcı bulunamazsa hata döndür
+      if (!user) {
+        throw new Error('Kullanıcı bulunamadı.');
       }
-    },
-  };
-  
-  export default userService;
-  
+
+      // Şifre kontrolü
+      if (user.password !== password) {
+        throw new Error('Şifre yanlış.');
+      }
+
+      return { success: true, message: 'Giriş başarıyla tamamlandı.' };
+    } catch (error) {
+      console.error(error);
+      return { success: false, message: 'Giriş sırasında bir hata oluştu.' };
+    }
+  },
+};
+
+module.exports = userService;

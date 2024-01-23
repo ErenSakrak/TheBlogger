@@ -17,7 +17,7 @@ import ListBlog from "../pages/ListBlog";
 import { Layout, Menu, Button, theme } from "antd";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-const { Header, Sider, Content } = Layout;
+const {  Sider, Content } = Layout;
 
 const Body = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -34,6 +34,17 @@ const Body = () => {
         collapsedWidth={50}
       >
         <div className="demo-logo-vertical" />
+        <Button
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={() => setCollapsed(!collapsed)}
+            style={{
+              fontSize: "16px",
+              width: 50,
+              height: 64,
+              color:"white"
+            }}
+          />
         <Menu
           theme="dark"
           mode="inline"
@@ -78,23 +89,6 @@ const Body = () => {
         />
       </Sider>
       <Layout>
-        <Header
-          style={{
-            padding: 0,
-            background: colorBgContainer,
-          }}
-        >
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-            style={{
-              fontSize: "16px",
-              width: 64,
-              height: 64,
-            }}
-          />
-        </Header>
         <Content
           style={{
             margin: "24px 16px",

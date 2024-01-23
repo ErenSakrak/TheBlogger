@@ -1,64 +1,40 @@
-// components/Login.js
-import React, { useState } from "react";
-import { Form, Input, Button, message } from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
-
-import userService from "../../server/services/userService";
+import React, { useState } from 'react';
+import axios from 'axios';
 
 const Login = () => {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
-  const onFinish = async (values) => {
+  const handleLogin = async () => {
     try {
-      setLoading(true);
-      await userService.login(values);
-      message.success("Giriş başarıyla tamamlandı.");
-      navigate("/dashboard"); // Giriş başarılıysa yönlendirilecek sayfa
+      const response = await axios.post('http://localhost:3001/api/login', {
+        username,
+        password,
+      });
+
+      console.log(response.data); // Başarı veya hata mesajını konsola yazdırabilirsiniz
     } catch (error) {
-      message.error("Giriş sırasında bir hata oluştu.");
-    } finally {
-      setLoading(false);
+      console.error('Giriş hatası:', error);
     }
   };
 
   return (
-    <Form name="login" onFinish={onFinish}>
-      <Form.Item
-        name="username"
-        rules={[
-          {
-            required: true,
-            message: "Kullanıcı adı boş bırakılamaz!",
-          },
-        ]}
-      >
-        <Input
-          prefix={<UserOutlined className="site-form-item-icon" />}
-          placeholder="Kullanıcı Adı"
-        />
-      </Form.Item>
-      <Form.Item
-        name="password"
-        rules={[
-          {
-            required: true,
-            message: "Şifre boş bırakılamaz!",
-          },
-        ]}
-      >
-        <Input.Password
-          prefix={<LockOutlined className="site-form-item-icon" />}
-          placeholder="Şifre"
-        />
-      </Form.Item>
-      <Form.Item>
-        <Button type="primary" htmlType="submit" loading={loading}>
-          Giriş Yap
-        </Button>
-      </Form.Item>
-    </Form>
+    <div>
+      <h2>Giriş Yap</h2>
+      <label>Kullanıcı Adı:</label>
+      <input
+        type="text"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
+      <label>Şifre:</label>
+      <input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <button onClick={handleLogin}>Giriş Yap</button>
+    </div>
   );
 };
 

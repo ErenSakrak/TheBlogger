@@ -2,11 +2,11 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const blogController = require('./controllers/blogController');
+const userController = require('./controllers/userController');
 const path = require('path'); // path modülünü ekleyin
 
 const app = express();
 const port = 3001;
-
 
 app.use(cors());
 app.use(express.json());
@@ -21,8 +21,9 @@ mongoose.connect('mongodb://127.0.0.1:27017/Blog', {
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-// BlogController'ı ekle
+// BlogController'ı ve UserController'ı ekleyin
 app.use('/api', blogController);
+app.use('/api', userController);
 
 // express.static middleware'ini ekleyin
 app.use('/public', express.static(path.join(__dirname, 'public')));
