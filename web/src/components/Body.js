@@ -95,6 +95,9 @@ const Body = () => {
         collapsed={collapsed}
         width={300}
         collapsedWidth={50}
+        style={{
+          background: "linear-gradient(to bottom, #001f3f, #0C356A)"
+        }}
       >
         <div className="demo-logo-vertical" />
         <Button
@@ -115,7 +118,7 @@ const Body = () => {
             menuItems.find((item) => item.to === currentPath)?.key || "1",
           ]}
           selectedKeys={[currentPath]}
-          style={{ borderRight: 0 }}
+          style={{ borderRight: 0, backgroundColor:"transparent", }}
         >
           {menuItems.map((item) => (
             <Menu.Item

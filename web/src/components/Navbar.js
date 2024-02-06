@@ -33,11 +33,8 @@ const Navbar = () => {
       }, 400); // 1500 milisaniye (1.5 saniye) bekletme süresi
     } catch (error) {
       // Hata durumunda hata mesajını göster
-      
     }
   };
-
-  
 
   return (
     <Layout>
@@ -50,24 +47,22 @@ const Navbar = () => {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          background: "linear-gradient(to right, #001f3f, #0C356A)",
         }}
       >
         {/* Logo bölümü */}
         <div style={{ display: "flex", alignItems: "center" }}>
-          <div
+          <img
+            src="logo.jpg" // Logo resminin yolunu belirtin
+            alt="Blogger Logo" // Resmin alternatif metni
             style={{
-              width: "40px",
-              height: "40px",
-              background: "#fff",
+              width: "110px", // Resmin genişliği
+              height: "50px", // Resmin yüksekliği
               marginRight: "16px",
-              backgroundColor: "magenta",
+              borderRadius: "15px",
+              boxShadow: "1px 1px 15px rgba(255, 255, 255, 0.5)", // Gölge efekti
             }}
-          >
-            {/* Logo içeriği buraya eklenebilir */}
-          </div>
-          <span style={{ color: "#fff", fontSize: "18px", fontWeight: "bold" }}>
-            Blogger
-          </span>
+          />
         </div>
 
         {/* Menü bölümü */}
@@ -79,6 +74,7 @@ const Navbar = () => {
             justifyContent: "flex-end",
             flex: 1,
             minWidth: 0,
+            backgroundColor:"transparent"
           }}
         >
           <Menu.Item key="/">
