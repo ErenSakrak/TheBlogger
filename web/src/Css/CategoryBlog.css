@@ -1,0 +1,77 @@
+.categoryblog-container {
+    display: flex;
+    flex-direction: column;
+  
+  }
+  
+  .categoryblog-cards {
+    display: flex;
+    flex-wrap: wrap;
+
+  }
+  
+  .categoryblog-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(116, 142, 255, 0.3);
+    border-radius: 10px;
+    padding: 25px;
+    padding-bottom: 25px;
+    padding-top: 5px;
+    margin: 10px;
+    width: 300px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(143, 168, 250, 0.2);
+    max-height: 550px;
+  }
+  
+  .categoryblog-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: black;
+    word-wrap: break-word;
+  }
+  
+  .categoryblog-image-box {
+    text-align: center;
+  }
+  
+  .categoryblog-image {
+    max-width: 100%;
+    border-radius: 8px;
+  }
+  
+  .categoryblog-alt-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 5px;
+    word-wrap: break-word;
+  }
+  
+  .categoryblog-description {
+    width: 100%;
+    word-wrap: break-word; /* Metni belirli bir genişlikte kırar */
+    min-height: 50px;
+  }
+  
+  .categoryblog-category {
+    position: absolute;
+    bottom: 5px; /* İstediğiniz miktarda boşluk bırakabilirsiniz */
+    right: 5px; /* İstediğiniz miktarda boşluk bırakabilirsiniz */
+    margin: 0;
+    background-color: #fff; /* Opsiyonel: Kategori metni arka plan rengi */
+    padding: 5px; /* Opsiyonel: Kategori metni iç içe görünmesi için padding */
+    align-self: flex-end;
+  }
+  
+  .read-more-link {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0px;
+    height: auto;
+    text-transform: uppercase;
+  }
+  

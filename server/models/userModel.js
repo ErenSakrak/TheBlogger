@@ -2,7 +2,6 @@
 
 const mongoose = require('mongoose');
 
-// Kullanıcı modelini tanımla
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -18,9 +17,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  blogs: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Blog',
+  }],
 });
 
-// Kullanıcı modelini MongoDB'ye bağla
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;

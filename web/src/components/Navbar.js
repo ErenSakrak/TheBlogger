@@ -7,9 +7,8 @@ const { Header } = Layout;
 
 const Navbar = () => {
   const location = useLocation();
-  const { isLoggedIn, logout } = useAuth();
-  const navigate = useNavigate(); // useNavigate hook'unu kullanın
-  
+  const { isLoggedIn, username, logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log("Sayfa değişti:", location.pathname);
@@ -17,23 +16,28 @@ const Navbar = () => {
   }, [location.pathname, isLoggedIn]);
 
   const handleLogout = async () => {
-  // Çıkış yapılırken loading başlasın
-  message.loading({ content: 'Çıkış yapılıyor...', key: 'logoutLoading', duration: 0.4 });
+    // Çıkış yapılırken loading başlasın
+    message.loading({
+      content: "Çıkış yapılıyor...",
+      key: "logoutLoading",
+      duration: 0.4,
+    });
 
-  try {
-    await logout();
-    // Çıkış yapıldıktan sonra bir süre bekleyip Login sayfasına yönlendir
-    setTimeout(() => {
-      // Çıkış işlemi tamamlandıktan sonra "Çıkış Yapıldı" mesajını göster
-      message.success({ content: 'Çıkış yapıldı.', key: 'logoutSuccess' });
-      navigate("/login");
-    }, 500); // 1500 milisaniye (1.5 saniye) bekletme süresi
-  } catch (error) {
-    // Hata durumunda hata mesajını göster
-    message.error({ content: 'Çıkış sırasında bir hata oluştu.', key: 'logoutError' });
-  }
-};
+    try {
+      await logout();
+      // Çıkış yapıldıktan sonra bir süre bekleyip Login sayfasına yönlendir
+      setTimeout(() => {
+        // Çıkış işlemi tamamlandıktan sonra "Çıkış Yapıldı" mesajını göster
+        message.success({ content: "Çıkış yapıldı.", key: "logoutSuccess" });
+        navigate("/login");
+      }, 400); // 1500 milisaniye (1.5 saniye) bekletme süresi
+    } catch (error) {
+      // Hata durumunda hata mesajını göster
+      
+    }
+  };
 
+  
 
   return (
     <Layout>
@@ -41,7 +45,7 @@ const Navbar = () => {
         style={{
           position: "fixed",
           top: 0,
-          zIndex: 1,
+          zIndex: 100,
           width: "100%",
           display: "flex",
           justifyContent: "space-between",
@@ -88,7 +92,10 @@ const Navbar = () => {
               <Menu.Item key="/list-blog">
                 <Link to="/list-blog">Bloglarım</Link>
               </Menu.Item>
-              <Menu.Item>
+              <Menu.Item key="/logout">
+                <span style={{ color: "#fff", marginRight: "8px" }}>
+                  Merhaba, {username}!
+                </span>
                 <Button onClick={handleLogout}>Çıkış Yap</Button>
               </Menu.Item>
             </>

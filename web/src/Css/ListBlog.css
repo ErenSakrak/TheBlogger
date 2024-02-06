@@ -1,8 +1,7 @@
 .blog-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+
 }
 
 .blog-cards {
@@ -12,6 +11,7 @@
 }
 
 .listblog-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   border: 1px solid rgba(116, 142, 255, 0.3);
@@ -22,7 +22,7 @@
   margin: 10px;
   width: 300px;
   overflow: hidden;
-  box-shadow: 0 0 10px rgba(143, 168, 250, 0.2); /* Gölgeli efekt ekleniyor */
+  box-shadow: 0 0 10px rgba(143, 168, 250, 0.2);
   max-height: 550px;
 }
 
@@ -55,6 +55,16 @@
   width: 100%;
   word-wrap: break-word; /* Metni belirli bir genişlikte kırar */
   min-height: 50px;
+}
+
+.listblog-category {
+  position: absolute;
+  bottom: 5px; /* İstediğiniz miktarda boşluk bırakabilirsiniz */
+  right: 5px; /* İstediğiniz miktarda boşluk bırakabilirsiniz */
+  margin: 0;
+  background-color: #fff; /* Opsiyonel: Kategori metni arka plan rengi */
+  padding: 5px; /* Opsiyonel: Kategori metni iç içe görünmesi için padding */
+  align-self: flex-end;
 }
 
 .read-more-link {

@@ -19,7 +19,7 @@ const upload = multer({ storage: storage });
 
 router.post("/saveBlog", upload.single("image"), async (req, res) => {
   try {
-    const { title, altTitle, description } = req.body;
+    const { title, altTitle, description, category } = req.body;
 
     // Dosya yükleme işlemi başarısız olursa
     if (!req.file) {
@@ -35,6 +35,7 @@ router.post("/saveBlog", upload.single("image"), async (req, res) => {
       image: imagePath,
       altTitle,
       description,
+      category,
     });
 
     await newBlog.save();
@@ -48,13 +49,26 @@ router.post("/saveBlog", upload.single("image"), async (req, res) => {
 
 router.get("/getBlogs", async (req, res) => {
   try {
-    const blogs = await Blog.find();
-    res.status(200).json(blogs); // JSON yanıtı dön
+    const blogs = await Blog.find().populate('author'); // Populate the 'author' field
+    res.status(200).json(blogs);
   } catch (error) {
     console.error("Error fetching blogs:", error);
-    res.status(500).json({ success: false, message: "Error fetching blogs" }); // JSON yanıtı dön
+    res.status(500).json({ success: false, message: "Error fetching blogs" });
   }
 });
+
+router.get("/getBlogs/:category", async (req, res) => {
+  try {
+    const category = req.params.category;
+    const query = category ? { category } : {};
+    const blogs = await Blog.find(query);
+    res.json(blogs);
+  } catch (error) {
+    console.error("Error fetching blogs:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 
 router.put("/updateBlog/:id", upload.single("image"), async (req, res) => {
   try {

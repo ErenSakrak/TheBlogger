@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Input,
   Upload,
@@ -15,12 +16,20 @@ import { UploadOutlined, DownOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
 
+const getCategoryDisplayName = (categoryItem) => {
+  // Özel bir kategori adı görüntüleme mantığı buraya eklenir
+  // Örneğin, kategori adını düzeltmek için:
+  // return categoryItem.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+  return categoryItem;
+};
+
 function CreateBlog() {
+  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [image, setImage] = useState(null);
   const [altTitle, setAltTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [category, setCategory] = useState(null);
 
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
@@ -46,9 +55,9 @@ function CreateBlog() {
     textarea.style.height = textarea.scrollHeight + "px";
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     // Form alanlarına giriş kontrolü
-    if (!title || !image || !altTitle || !description || !selectedCategory) {
+    if (!title || !image || !altTitle || !description || !category) {
       message.error("Lütfen tüm alanları doldurun.");
       return;
     }
@@ -58,98 +67,57 @@ function CreateBlog() {
     formData.append("title", title);
     formData.append("altTitle", altTitle);
     formData.append("description", description);
-    formData.append("category", selectedCategory);
+    formData.append("category", category);
 
-    fetch("http://localhost:3001/api/saveBlog", {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Blog saved successfully:", data);
-        setTitle("");
-        setImage(null);
-        setAltTitle("");
-        setDescription("");
-        setSelectedCategory(null);
-        message.success("Blog başarıyla kaydedildi.");
-      })
-      .catch((error) => {
-        console.error("Error saving blog:", error);
-        message.error("Blog kaydı sırasında bir hata oluştu.");
+    try {
+      const response = await fetch("http://localhost:3001/api/saveBlog", {
+        method: "POST",
+        body: formData,
       });
+
+      const data = await response.json();
+      console.log("Blog saved successfully:", data);
+
+      setTitle("");
+      setImage(null);
+      setAltTitle("");
+      setDescription("");
+      setCategory(null);
+
+      message.success("Blog başarıyla kaydedildi.");
+
+      // Kategori sayfasına yönlendirme
+      navigate(`/${category}`);
+    } catch (error) {
+      console.error("Error saving blog:", error);
+      message.error("Blog kaydı sırasında bir hata oluştu.");
+    }
   };
 
+  const categories = [
+    "car-blog",
+    "home-blog",
+    "fun-blog",
+    "sportandlife-blog",
+    "technology-blog",
+    "fashion-blog",
+    "favorite-blog",
+  ];
+
   const handleCategorySelect = ({ key }) => {
-    setSelectedCategory(key);
+    setCategory(key);
   };
 
   const categoriesMenu = (
     <Menu onClick={handleCategorySelect}>
-      <Menu.Item
-        key="Araba Blogları"
-        style={
-          selectedCategory === "Araba Blogları" ? { fontWeight: "bold" } : {}
-        }
-      >
-        Araba Blogları
-      </Menu.Item>
-      <Menu.Divider />
-      <Menu.Item
-        key="Ev Blogları"
-        style={selectedCategory === "Ev Blogları" ? { fontWeight: "bold" } : {}}
-      >
-        Ev Blogları
-      </Menu.Item>
-      <Menu.Divider />
-      <Menu.Item
-        key="Eğlence Blogları"
-        style={
-          selectedCategory === "Eğlence Blogları" ? { fontWeight: "bold" } : {}
-        }
-      >
-        Eğlence Blogları
-      </Menu.Item>
-      <Menu.Divider />
-      <Menu.Item
-        key="Spor ve Sağlıklı Yaşam Blogları"
-        style={
-          selectedCategory === "Spor ve Sağlıklı Yaşam Blogları"
-            ? { fontWeight: "bold" }
-            : {}
-        }
-      >
-        Spor ve Sağlıklı Yaşam Blogları
-      </Menu.Item>
-      <Menu.Divider />
-      <Menu.Item
-        key="Teknoloji Blogları"
-        style={
-          selectedCategory === "Teknoloji Blogları"
-            ? { fontWeight: "bold" }
-            : {}
-        }
-      >
-        Teknoloji Blogları
-      </Menu.Item>
-      <Menu.Divider />
-      <Menu.Item
-        key="Moda ve Giyim Blogları"
-        style={
-          selectedCategory === "Moda ve Giyim Blogları"
-            ? { fontWeight: "bold" }
-            : {}
-        }
-      >
-        Moda ve Giyim Blogları
-      </Menu.Item>
-      <Menu.Divider />
-      <Menu.Item
-        key="Diğer"
-        style={selectedCategory === "Diğer" ? { fontWeight: "bold" } : {}}
-      >
-        Diğer
-      </Menu.Item>
+      {categories.map((categoryItem) => (
+        <Menu.Item
+          key={categoryItem}
+          style={category === categoryItem ? { fontWeight: "bold" } : {}}
+        >
+          {getCategoryDisplayName(categoryItem)}
+        </Menu.Item>
+      ))}
     </Menu>
   );
 
@@ -185,8 +153,8 @@ function CreateBlog() {
           <Dropdown overlay={categoriesMenu} trigger={["click"]}>
             <Button>
               <Space>
-                {selectedCategory !== null ? (
-                  `Kategori: ${selectedCategory}`
+                {category !== null ? (
+                  `Kategori: ${getCategoryDisplayName(category)}`
                 ) : (
                   <>
                     Kategori Seç <DownOutlined />

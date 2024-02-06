@@ -1,8 +1,12 @@
+// src/pages/ListBlog.js
+
 import React, { useState, useEffect } from "react";
 import { Spin, Button } from "antd";
+import { useAuth } from '../auth/AuthContext';
 import "../Css/ListBlog.css";
 
 function ListBlog() {
+  const { username } = useAuth();
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -11,10 +15,14 @@ function ListBlog() {
       try {
         const response = await fetch("http://localhost:3001/api/getBlogs");
         const data = await response.json();
-
+  
         // Veri çekme işlemi tamamlandıktan sonra 2 saniye beklet
         setTimeout(() => {
-          setBlogs(data);
+          const filteredBlogs = username
+            ? data.filter(blog => blog.author === username._id)
+            : data;
+  
+          setBlogs(filteredBlogs);
           setLoading(false);
         }, 500);
       } catch (error) {
@@ -22,9 +30,9 @@ function ListBlog() {
         setLoading(false);
       }
     };
-
+  
     fetchData();
-  }, []);
+  }, [username]);
 
   return (
     <div className="blog-container">
@@ -60,6 +68,7 @@ function ListBlog() {
                   ? `${blog.description.slice(0, 150)}...`
                   : blog.description}
               </p>
+              <p className="listblog-category">Kategori: {blog.category}</p>
               {blog.description.length > 150 && (
                 <Button type="link" className="read-more-link">
                   Devamını Oku

@@ -8,7 +8,14 @@ const path = require('path'); // path modülünü ekleyin
 const app = express();
 const port = 3001;
 
-app.use(cors());
+// CORS konfigürasyonu
+const corsOptions = {
+  origin: 'http://localhost:3000', // Frontend URL'nizi güncelleyin
+  credentials: true,
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // MongoDB bağlantısı
