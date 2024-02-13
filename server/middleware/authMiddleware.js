@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
+const User = require("../models/userModel");
 
-const authMiddleware = (req, res, next) => {
+const authMiddleware = async (req, res, next) => {
   // Token'ı al
   const token = req.header('Authorization');
 
@@ -10,14 +11,19 @@ const authMiddleware = (req, res, next) => {
   }
 
   try {
-    // Token doğrula
-    const decoded = jwt.verify(token, 'your_secret_key'); // Secret key'i değiştirin
+    // "Bearer" kısmını ayır ve token'ı doğrula
+    const decoded = jwt.verify(token.replace("Bearer ", ""), 'secretkey', { algorithm: 'HS256' });
 
     // Kullanıcıyı talebe ekle
-    req.user = decoded.user;
+    const user = await User.findById(decoded.user.id); // Kullanıcıyı id'ye göre bul
+    if (!user) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+    
+    req.user = user;
     next();
   } catch (error) {
-    console.error('Authentication failed:', error);
+    console.error('Token verification error:', error.message);
     res.status(401).json({ message: 'Unauthorized' });
   }
 };

@@ -49,7 +49,12 @@ router.post("/saveBlog", upload.single("image"), async (req, res) => {
 
 router.get("/getBlogs", async (req, res) => {
   try {
-    const blogs = await Blog.find().populate('author'); // Populate the 'author' field
+    if (!req.user) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const blogs = await Blog.find({ author: req.user._id });
+    console.log(blogs); // Konsola blogları yazdır
     res.status(200).json(blogs);
   } catch (error) {
     console.error("Error fetching blogs:", error);

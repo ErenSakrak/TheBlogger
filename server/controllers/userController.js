@@ -1,5 +1,6 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const router = express.Router();
 const User = require("../models/userModel");
 const authMiddleware = require("../middleware/authMiddleware");
@@ -54,8 +55,16 @@ router.post("/login", async (req, res) => {
         .json({ message: "Username or password is incorrect!" });
     }
 
-    // Login successful, return user information
-    res.status(200).json({ message: "Login successful.", user });
+    // Create a JWT token
+    const token = jwt.sign(
+      { user: { id: user._id, username: user.username } },
+      "secretkey", // Bu gizli anahtar, kullanılan gizli anahtar ile aynı olmalıdır
+      { expiresIn: "1h", algorithm: 'HS256' }
+    );
+    
+
+    // Login successful, return user information and token
+    res.status(200).json({ message: "Login successful.", user, token });
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ message: "An error occurred during login." });
@@ -68,19 +77,20 @@ router.get("/getUserData", authMiddleware, async (req, res) => {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const userData = await User.findById(req.user._id);
+    const userData = await User.findById(req.user._id).select("-password");
 
     if (!userData) {
       return res.status(404).json({ message: "User data not found" });
     }
 
+    // Yanıtı JSON formatında gönderin
     res.status(200).json({ user: req.user, additionalData: userData });
   } catch (error) {
     console.error("Error fetching user data:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 });
-
-
 
 module.exports = router;

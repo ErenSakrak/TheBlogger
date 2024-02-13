@@ -1,28 +1,29 @@
-// src/pages/ListBlog.js
-
 import React, { useState, useEffect } from "react";
-import { Spin, Button } from "antd";
-import { useAuth } from '../auth/AuthContext';
+import { Empty, Spin, Button } from "antd";
+import { useAuth } from "../auth/AuthContext";
 import "../Css/ListBlog.css";
 
 function ListBlog() {
-  const { username } = useAuth();
+  const { user } = useAuth();
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/getBlogs");
-        const data = await response.json();
-  
+        if (!user) {
+          // Eğer kullanıcı oturumu açık değilse, sadece loading durumunu güncelle
+          setLoading(false);
+          return;
+        }
+
+        const response = await fetch(`http://localhost:3001/api/getBlogs/${user._id}`);
+        const blogs = await response.json();
+
+
         // Veri çekme işlemi tamamlandıktan sonra 2 saniye beklet
         setTimeout(() => {
-          const filteredBlogs = username
-            ? data.filter(blog => blog.author === username._id)
-            : data;
-  
-          setBlogs(filteredBlogs);
+          setBlogs(blogs);
           setLoading(false);
         }, 500);
       } catch (error) {
@@ -30,14 +31,16 @@ function ListBlog() {
         setLoading(false);
       }
     };
-  
+
     fetchData();
-  }, [username]);
+  }, [user]);
 
   return (
     <div className="blog-container">
       {loading ? (
         <Spin size="large" />
+      ) : blogs.length === 0 ? (
+        <Empty description="Not Found!" />
       ) : (
         <div className="blog-cards">
           {blogs.map((blog) => (
